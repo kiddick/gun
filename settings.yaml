@@ -1,0 +1,6 @@
+user: username
+env_path: virtualenvpath
+app_dir: app_dir
+port: 321
+name: myapp
+flask_app: app

@@ -7,11 +7,8 @@ import yaml
 import click
 
 
-@click.command()
-@click.argument('config', nargs=1, type=click.File('r'))
 def read_settings(config):
-    data = yaml.load(config)
-    return click.echo(data)
+    return yaml.load(config)
 
 
 def get_ip():
@@ -38,10 +35,12 @@ def read_template(name):
         return Template(filein.read())
 
 
-def fill_template():
+@click.command()
+@click.argument('config', nargs=1, type=click.File('r'))
+def fill_template(config):
 
     src = read_template('template.conf')
-    data = read_settings()
+    data = read_settings(config)
     data['ip'] = get_ip()
 
     save_nginx_conf(data['name'], src.substitute(data))

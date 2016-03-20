@@ -8,11 +8,10 @@ import click
 
 
 @click.command()
-@click.argument('arg', nargs=1, type=click.Path())
-def read_settings(arg):
-    with open(arg, 'r') as conf_file:
-        data = yaml.load(conf_file)
-    return data
+@click.argument('config', nargs=1, type=click.File('r'))
+def read_settings(config):
+    data = yaml.load(config)
+    return click.echo(data)
 
 
 def get_ip():

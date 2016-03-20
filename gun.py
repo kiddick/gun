@@ -1,10 +1,22 @@
 import os
+import errno
 import socket
 from contextlib import closing
 from string import Template
 
 import yaml
 import click
+
+
+def symlink_force(target, name):
+    try:
+        os.symlink(target, name)
+    except OSError as err:
+        if err.errno == errno.EEXIST:
+            os.remove(name)
+            os.symlink(target, name)
+        else:
+            raise err
 
 
 def read_settings(config):
@@ -26,8 +38,8 @@ def save_sites_config(name, data):
     with open(os.path.join('/etc/nginx/sites-available', name),
               'w') as ngnix_conf:
         ngnix_conf.write(data)
-    os.symlink(os.path.join('/etc/nginx/sites-available', name),
-               os.path.join('/etc/nginx/sites-enabled', name))
+    symlink_force(os.path.join('/etc/nginx/sites-available', name),
+                  os.path.join('/etc/nginx/sites-enabled', name))
 
 
 def read_template(name):

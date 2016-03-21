@@ -12,6 +12,8 @@ from string import Template
 import yaml
 import click
 
+__location__ = os.path.realpath(
+    os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
 def symlink_force(target, name):
     try:
@@ -48,7 +50,7 @@ def save_sites_config(name, data):
 
 
 def read_template(name):
-    with open(name, 'r') as filein:
+    with open(os.path.join(__location__, name), 'r') as filein:
         return Template(filein.read())
 
 

@@ -86,9 +86,9 @@ def cli(ctx, config):
 @click.pass_context
 def ngrok(ctx):
     data = read_settings(ctx.obj['config'])
-    mkdir(os.path.join(data['app_name'], 'ngrok'))
+    mkdir(os.path.join(data['app_dir'], 'ngrok'))
     ip_address = get_ip()
-    paths = (data['app_name'], 'ngrok', 'ngrok.log')
+    paths = (data['app_dir'], 'ngrok', 'ngrok.log')
     logfile = os.path.join(*paths)
     if os.path.isfile(logfile):
         os.rename(
@@ -103,13 +103,14 @@ def ngrok(ctx):
     )
     time.sleep(1.2)
     with open(logfile, 'r') as lf:
-        data = lf.read().replace('\n', '')
+        content = lf.read().replace('\n', '')
     try:
-        ngrok_host = re.search(r'Hostname:\w+.\w+.\w+', data).group(0)[9:]
-        with open(os.path.join(data['app_name'], 'ngrok.host'), 'w') as nh:
+        ngrok_host = re.search(r'Hostname:\w+.\w+.\w+', content).group(0)[9:]
+        with open(os.path.join(data['app_dir'], 'ngrok.host'), 'w') as nh:
             nh.write(ngrok_host)
     except Exception:
-        pass
+        raise
 
 if __name__ == '__main__':
     cli()
+
